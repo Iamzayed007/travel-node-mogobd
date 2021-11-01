@@ -87,21 +87,31 @@ async function run() {
 
 
 
-        app.put('/orders/:id', async (req, res) => {
+        // app.put('/orders/:id', async (req, res) => {
 
-            const id = req.params.id;
-            console.log('updating user', req)
-            const updateData = req.body;
-            const filter = { _id: ObjectId(id) };
-            const options = { upsert: true };
-            const updateDoc = {
-                $set: {
-                    status: updateData.status
+        //     const id = req.params.id;
+        //     console.log('updating user', req)
+        //     const updateData = req.body;
+        //     const filter = { _id: ObjectId(id) };
+        //     const options = { upsert: true };
+        //     const updateDoc = {
+        //         $set: {
+        //             status: updateData.status
 
-                },
-            };
-            const result = await orderCollection.updateOne(filter, updateDoc, options);
-            res.json(result);
+        //         },
+        //     };
+        //     const result = await orderCollection.updateOne(filter, updateDoc, options);
+        //     res.json(result);
+        // })
+
+        app.patch('/orders/:id', (req, res) => {
+            orderCollection.updateOne({ _id: ObjectId(req.params.id) },
+                {
+                    $set: { status: req.body.status }
+                })
+                .then(result => {
+                    res.send(result.modifiedCount > 0)
+                })
         })
 
 
